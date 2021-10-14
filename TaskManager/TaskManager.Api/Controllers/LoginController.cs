@@ -14,6 +14,9 @@ namespace TaskManager.Api
     {
         private readonly ILogger<LoginController> _logger;
 
+        private readonly string loginMock = "admin@admin.com";
+        private readonly string senhaMock = "Admin1234@";
+
         public LoginController(ILogger<LoginController> logger)
         {
             _logger = logger;
@@ -21,20 +24,31 @@ namespace TaskManager.Api
 
 
         [HttpPost]
-        public IActionResult FazerLogin([FromBody] LoginRequestDto request)
+        public IActionResult EfetuarLogin([FromBody] LoginRequestDto request)
         {
             try
             {
-                if (request == null || string.IsNullOrEmpty(request.Login.Trim()) || string.IsNullOrEmpty(request.Senha.Trim()))
+                if (request == null || string.IsNullOrEmpty(request.Login.Trim()) || string.IsNullOrEmpty(request.Senha.Trim()) || !request.Login.Equals(loginMock) || !request.Senha.Equals(senhaMock))
                 {
-                    return BadRequest(new ErrorResponseDto()
-                    {
+                    return BadRequest(new ErrorResponseDto() {
                         Status = StatusCodes.Status400BadRequest,
                         Erro = "Parâmetros de entrada inválidos."
                     });
                 }
 
-                return Ok("Usuário autenticado.");
+                var usuarioMock = new Usuario()
+                {
+                    Id = 1,
+                    Nome = "Nome usu teste",
+                    Email = loginMock,
+                    Senha = senhaMock
+                };
+
+                return Ok(new LoginResponseDto() {
+                    Email = usuarioMock.Email,
+                    Nome = usuarioMock.Nome,
+                    Token = TokenService.CriarToken(usuarioMock)
+                });;
             }
             catch (Exception e)
             {
