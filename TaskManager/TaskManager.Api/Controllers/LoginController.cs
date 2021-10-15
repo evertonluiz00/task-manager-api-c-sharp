@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TaskManager.Api
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : ControllerBase
+    public class LoginController : BaseController
     {
         private readonly ILogger<LoginController> _logger;
 
@@ -24,6 +22,7 @@ namespace TaskManager.Api
 
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult EfetuarLogin([FromBody] LoginRequestDto request)
         {
             try
