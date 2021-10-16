@@ -31,7 +31,7 @@ namespace TaskManager.Api.Controllers
                 var usuarioMock = new Usuario()
                 {
                     Id = 1,
-                    Nome = "Nome usu teste",
+                    Nome = "UsuarioTeste",
                     Email = loginMock,
                     Senha = senhaMock
                 };
