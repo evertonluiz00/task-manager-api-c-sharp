@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace TaskManager.Api.Controllers
 {
@@ -15,13 +13,15 @@ namespace TaskManager.Api.Controllers
     public class UsuarioController : BaseController
     {
         private readonly ILogger<UsuarioController> _logger;
+        private readonly IUsuarioRepository _usuarioRepository;
 
         private readonly string loginMock = "admin@admin.com";
         private readonly string senhaMock = "Admin1234@";
 
-        public UsuarioController(ILogger<UsuarioController> logger)
+        public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
         {
             _logger = logger;
+            _usuarioRepository = usuarioRepository;
         }
 
         [HttpGet]
@@ -85,7 +85,9 @@ namespace TaskManager.Api.Controllers
                     });
                 }
 
-                return Ok(usuario);
+                _usuarioRepository.Salvar(usuario);
+
+                return Ok( new { msg = "Usuário criado com sucesso"} );
             }
             catch (Exception e)
             {
@@ -94,7 +96,7 @@ namespace TaskManager.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponseDto()
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Erro = $"Erro ao salvar usuário, tente novamente."
+                    Erro = $"Erro ao salvar usuário, tente novamente. Err: {e.Message}"
                 });
             }
         }
