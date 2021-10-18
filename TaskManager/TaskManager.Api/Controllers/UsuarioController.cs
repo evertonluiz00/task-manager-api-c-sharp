@@ -76,6 +76,11 @@ namespace TaskManager.Api.Controllers
                     erros.Add("E-mail inválido");
                 }
 
+                if (_usuarioRepository.ExisteUsuarioEmail(usuario.Email))
+                {
+                    erros.Add("Já existe uma conta com este e-mail.");
+                }
+
                 if (erros.Count > 0)
                 {
                     return BadRequest(new ErrorResponseDto()
@@ -84,6 +89,9 @@ namespace TaskManager.Api.Controllers
                         Erros = erros
                     });
                 }
+
+                usuario.Email = usuario.Email.ToLower();
+                usuario.Senha = MD5Utils.GerarHashMD5(usuario.Senha);
 
                 _usuarioRepository.Salvar(usuario);
 

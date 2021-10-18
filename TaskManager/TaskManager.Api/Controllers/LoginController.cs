@@ -11,13 +11,12 @@ namespace TaskManager.Api
     public class LoginController : BaseController
     {
         private readonly ILogger<LoginController> _logger;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        private readonly string loginMock = "admin@admin.com";
-        private readonly string senhaMock = "Admin1234@";
-
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository)
         {
             _logger = logger;
+            _usuarioRepository = usuarioRepository;
         }
 
 
@@ -27,7 +26,7 @@ namespace TaskManager.Api
         {
             try
             {
-                if (request == null || string.IsNullOrEmpty(request.Login.Trim()) || string.IsNullOrEmpty(request.Senha.Trim()) || !request.Login.Equals(loginMock) || !request.Senha.Equals(senhaMock))
+                if (request == null || string.IsNullOrEmpty(request.Login.Trim()) || string.IsNullOrEmpty(request.Senha.Trim()))
                 {
                     return BadRequest(new ErrorResponseDto() {
                         Status = StatusCodes.Status400BadRequest,
@@ -35,18 +34,22 @@ namespace TaskManager.Api
                     });
                 }
 
-                var usuarioMock = new Usuario()
+
+                var usuario = _usuarioRepository.GetUsuarioByLoginSenha(request.Login, MD5Utils.GerarHashMD5(request.Senha));
+
+                if (usuario == null)
                 {
-                    Id = 1,
-                    Nome = "UsuarioTeste",
-                    Email = loginMock,
-                    Senha = senhaMock
-                };
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Usuário eu senha inválidos."
+                    });
+                }
 
                 return Ok(new LoginResponseDto() {
-                    Email = usuarioMock.Email,
-                    Nome = usuarioMock.Nome,
-                    Token = TokenService.CriarToken(usuarioMock)
+                    Email = usuario.Email,
+                    Nome = usuario.Nome,
+                    Token = TokenService.CriarToken(usuario)
                 });;
             }
             catch (Exception e)

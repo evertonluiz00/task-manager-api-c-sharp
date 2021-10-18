@@ -19,5 +19,15 @@ namespace TaskManager.Api
             _context.Usuario.Add(usuario);
             _context.SaveChanges();
         }
+
+        public bool ExisteUsuarioEmail(string email)
+        {
+            return _context.Usuario.Any(usuario => usuario.Email.ToLower() == email.ToLower());
+        }
+
+        public Usuario GetUsuarioByLoginSenha(string login, string senha)
+        {
+            return _context.Usuario.FirstOrDefault(usuario => usuario.Email == login.ToLower() && usuario.Senha == senha);
+        }
     }
 }

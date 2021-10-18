@@ -8,5 +8,7 @@ namespace TaskManager.Api
     public interface IUsuarioRepository
     {
         public void Salvar(Usuario usuario);
+        public bool ExisteUsuarioEmail(string email);
+        public Usuario GetUsuarioByLoginSenha(string login, string senha);
     }
 }
