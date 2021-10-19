@@ -13,15 +13,13 @@ namespace TaskManager.Api.Controllers
     public class UsuarioController : BaseController
     {
         private readonly ILogger<UsuarioController> _logger;
-        private readonly IUsuarioRepository _usuarioRepository;
 
         private readonly string loginMock = "admin@admin.com";
         private readonly string senhaMock = "Admin1234@";
 
-        public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
+        public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository) : base(usuarioRepository)
         {
             _logger = logger;
-            _usuarioRepository = usuarioRepository;
         }
 
         [HttpGet]

@@ -10,5 +10,6 @@ namespace TaskManager.Api
         }
 
         public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<Tarefa> Tarefa { get; set; }
     }
 }

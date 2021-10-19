@@ -9,6 +9,7 @@ namespace TaskManager.Api
     {
         public void Salvar(Usuario usuario);
         public bool ExisteUsuarioEmail(string email);
-        public Usuario GetUsuarioByLoginSenha(string login, string senha);
+        public Usuario GetByLoginSenha(string login, string senha);
+        public Usuario GetById(int idUsuario);
     }
 }

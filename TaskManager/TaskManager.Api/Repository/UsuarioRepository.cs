@@ -25,9 +25,14 @@ namespace TaskManager.Api
             return _context.Usuario.Any(usuario => usuario.Email.ToLower() == email.ToLower());
         }
 
-        public Usuario GetUsuarioByLoginSenha(string login, string senha)
+        public Usuario GetByLoginSenha(string login, string senha)
         {
             return _context.Usuario.FirstOrDefault(usuario => usuario.Email == login.ToLower() && usuario.Senha == senha);
+        }
+
+        public Usuario GetById(int idUsuario)
+        {
+            return _context.Usuario.FirstOrDefault(usuario => usuario.Id == idUsuario);
         }
     }
 }

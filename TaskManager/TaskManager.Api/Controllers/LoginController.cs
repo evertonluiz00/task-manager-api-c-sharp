@@ -11,12 +11,10 @@ namespace TaskManager.Api
     public class LoginController : BaseController
     {
         private readonly ILogger<LoginController> _logger;
-        private readonly IUsuarioRepository _usuarioRepository;
 
-        public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository)
+        public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository) : base(usuarioRepository)
         {
             _logger = logger;
-            _usuarioRepository = usuarioRepository;
         }
 
 
@@ -35,7 +33,7 @@ namespace TaskManager.Api
                 }
 
 
-                var usuario = _usuarioRepository.GetUsuarioByLoginSenha(request.Login, MD5Utils.GerarHashMD5(request.Senha));
+                var usuario = _usuarioRepository.GetByLoginSenha(request.Login, MD5Utils.GerarHashMD5(request.Senha));
 
                 if (usuario == null)
                 {
@@ -46,11 +44,13 @@ namespace TaskManager.Api
                     });
                 }
 
+                var token = TokenService.CriarToken(usuario);
+
                 return Ok(new LoginResponseDto() {
                     Email = usuario.Email,
                     Nome = usuario.Nome,
-                    Token = TokenService.CriarToken(usuario)
-                });;
+                    Token = token
+                });
             }
             catch (Exception e)
             {
