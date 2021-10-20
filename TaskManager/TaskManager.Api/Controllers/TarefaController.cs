@@ -74,5 +74,47 @@ namespace TaskManager.Api
                 });
             }
         }
+
+        [HttpDelete("{idTarefa}")]
+        public IActionResult DeletarTarefa(int idTarefa)
+        {
+            try
+            {
+                var usuario = ReadToken();
+                if (usuario == null || idTarefa <= 0)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Usuario ou tarefa inválidos"
+                    });
+                }
+
+                var tarefa = _tarefaRepository.GetById(idTarefa);
+                if (tarefa == null || tarefa.IdUsuario != usuario.Id)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Tarefa não encontrada"
+                    });
+                }
+
+                _tarefaRepository.RemoverTarefa(tarefa);
+                return Ok(new { msg = "Tarefa deletada com sucesso" });
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError($"Erro ao deletar tarefa: {e.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponseDto()
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Erro = $"Erro ao deletar tarefa, tente novamente. Err: {e.Message}"
+                });
+            }
+        }
+
     }
 }

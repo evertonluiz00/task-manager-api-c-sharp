@@ -8,5 +8,7 @@ namespace TaskManager.Api
     public interface ITarefaRepository
     {
         public void AdicionarTarefa(Tarefa tarefa);
+        public Tarefa GetById(int idTarefa);
+        public void RemoverTarefa(Tarefa tarefa);
     }
 }
