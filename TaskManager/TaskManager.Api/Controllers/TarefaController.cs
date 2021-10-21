@@ -116,5 +116,82 @@ namespace TaskManager.Api
             }
         }
 
+        [HttpPut("{idTarefa}")]
+        public IActionResult AtualizarTarefa([FromBody] Tarefa model, int idTarefa)
+        {
+            try
+            {
+                var usuario = ReadToken();
+                if (usuario == null || idTarefa <= 0)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Usuario ou tarefa inválidos"
+                    });
+                }
+
+                var tarefa = _tarefaRepository.GetById(idTarefa);
+                if (tarefa == null || tarefa.IdUsuario != usuario.Id)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Tarefa não encontrada"
+                    });
+                }
+
+                var erros = new List<string>();
+                if (model == null)
+                {
+                    erros.Add("Favor informar a tarefa ou usuário");
+                }
+                else if (!string.IsNullOrEmpty(model.Nome.Trim()) && model.Nome.Count() < 4)
+                {
+                    erros.Add("Favor informar um nome válido");
+                }
+
+                if (erros.Count > 0)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erros = erros
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(model.Nome.Trim()))
+                {
+                    tarefa.Nome = model.Nome;
+                }
+
+                if (model.DataPrevistaConclusao != DateTime.MinValue)
+                {
+                    tarefa.DataPrevistaConclusao = model.DataPrevistaConclusao;
+                }
+
+                if (model.DataConclusao != null && model.DataConclusao != DateTime.MinValue)
+                {
+                    tarefa.DataConclusao = model.DataConclusao;
+                }
+
+                _tarefaRepository.AtualizarTarefa(tarefa);
+                return Ok( new { msg = "Tarefa atualizada com sucesso."});
+
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError($"Erro ao atualizar tarefa: {e.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponseDto()
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Erro = $"Erro ao atualizar tarefa, tente novamente. Err: {e.Message}"
+                });
+            }
+        }
+
+
     }
 }

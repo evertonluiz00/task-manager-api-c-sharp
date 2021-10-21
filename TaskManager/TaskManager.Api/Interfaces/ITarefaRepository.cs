@@ -10,5 +10,6 @@ namespace TaskManager.Api
         public void AdicionarTarefa(Tarefa tarefa);
         public Tarefa GetById(int idTarefa);
         public void RemoverTarefa(Tarefa tarefa);
+        public void AtualizarTarefa(Tarefa tarefa);
     }
 }

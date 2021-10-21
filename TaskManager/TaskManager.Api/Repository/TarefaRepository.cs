@@ -30,5 +30,12 @@ namespace TaskManager.Api
             _context.Tarefa.Remove(tarefa);
             _context.SaveChanges();
         }
+
+        public void AtualizarTarefa(Tarefa tarefa)
+        {
+            _context.Entry(tarefa).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.SaveChanges();
+            _context.Entry(tarefa).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+        }
     }
 }
