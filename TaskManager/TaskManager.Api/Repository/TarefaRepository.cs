@@ -37,5 +37,10 @@ namespace TaskManager.Api
             _context.SaveChanges();
             _context.Entry(tarefa).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
         }
+
+        public List<Tarefa> BuscarTarefas(int idUsuario)
+        {
+            return _context.Tarefa.Where(tarefa => tarefa.IdUsuario == idUsuario).ToList();
+        }
     }
 }

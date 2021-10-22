@@ -193,5 +193,38 @@ namespace TaskManager.Api
         }
 
 
+        [HttpGet]
+        public IActionResult ListarTarefasUsuario()
+        {
+            try
+            {
+                var usuario = ReadToken();
+                if (usuario == null)
+                {
+                    return BadRequest(new ErrorResponseDto()
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Erro = "Usuário não encontrado"
+                    });
+                }
+
+                var resultado = _tarefaRepository.BuscarTarefas(usuario.Id);
+                return Ok(resultado);
+
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError($"Erro ao listar tarefas: {e.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponseDto()
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Erro = $"Erro ao listar tarefas, tente novamente. Err: {e.Message}"
+                });
+            }
+        }
+
+
     }
 }
