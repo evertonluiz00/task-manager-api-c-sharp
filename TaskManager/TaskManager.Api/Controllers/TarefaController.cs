@@ -194,7 +194,7 @@ namespace TaskManager.Api
 
 
         [HttpGet]
-        public IActionResult ListarTarefasUsuario()
+        public IActionResult ListarTarefasUsuario(DateTime? periodoDe, DateTime? periodoAte, StatusTarefaEnum status)
         {
             try
             {
@@ -208,7 +208,7 @@ namespace TaskManager.Api
                     });
                 }
 
-                var resultado = _tarefaRepository.BuscarTarefas(usuario.Id);
+                var resultado = _tarefaRepository.BuscarTarefas(usuario.Id, periodoDe, periodoAte, status);
                 return Ok(resultado);
 
             }

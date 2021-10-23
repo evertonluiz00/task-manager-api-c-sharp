@@ -11,6 +11,6 @@ namespace TaskManager.Api
         public Tarefa GetById(int idTarefa);
         public void RemoverTarefa(Tarefa tarefa);
         public void AtualizarTarefa(Tarefa tarefa);
-        public List<Tarefa> BuscarTarefas(int idUsuario);
+        public List<Tarefa> BuscarTarefas(int idUsuario, DateTime? periodoDe, DateTime? periodoAte, StatusTarefaEnum status);
     }
 }
